@@ -79,7 +79,26 @@ async function ledgerProvider(options: {
 
   const EthereumTx = await import('ethereumjs-tx')
   const ethUtil = await import('ethereumjs-util')
+  const { TypedDataUtils } = await import('eth-sig-util')
+
   const buffer = await import('buffer')
+
+  const domainHash = (message: any) => {
+    return TypedDataUtils.hashStruct(
+      'EIP712Domain',
+      message.domain,
+      message.types,
+      true
+    )
+  }
+  const messageHash = (message: any) => {
+    return TypedDataUtils.hashStruct(
+      message.primaryType,
+      message.message,
+      message.types,
+      true
+    )
+  }
 
   const {
     networkId,
@@ -122,6 +141,11 @@ async function ledgerProvider(options: {
     },
     signMessage: (messageData: any, callback: any) => {
       signMessage(messageData)
+        .then((res: string) => callback(null, res))
+        .catch(err => callback(err, null))
+    },
+    signTypedMessage: (messageData: any, callback: any) => {
+      signTypedMessage(messageData)
         .then((res: string) => callback(null, res))
         .catch(err => callback(err, null))
     },
@@ -395,6 +419,8 @@ async function ledgerProvider(options: {
 
     const path = [...addressToPath.values()][0]
 
+    console.log('Sign normal message called')
+
     return eth
       .signPersonalMessage(path, ethUtil.stripHexPrefix(message.data))
       .then((result: any) => {
@@ -402,6 +428,31 @@ async function ledgerProvider(options: {
         if (v.length < 2) {
           v = '0' + v
         }
+        return `0x${result['r']}${result['s']}${v}`
+      })
+  }
+
+  async function signTypedMessage(message: { data: any }) {
+    if (addressToPath.size === 0) {
+      await enable()
+    }
+
+    const path = [...addressToPath.values()][0]
+
+    console.log('Sign typed message called. Woah coool!')
+
+    return eth
+      .signEIP712HashedMessage(
+        path,
+        ethUtil.bufferToHex(domainHash(message)),
+        ethUtil.bufferToHex(messageHash(message))
+      )
+      .then((result: any) => {
+        let v = (result['v'] - 27).toString(16)
+        if (v.length < 2) {
+          v = '0' + v
+        }
+        console.log('Got result', `0x${result['r']}${result['s']}${v}`)
         return `0x${result['r']}${result['s']}${v}`
       })
   }
