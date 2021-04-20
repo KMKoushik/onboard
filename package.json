@@ -28,6 +28,7 @@
     "@rollup/plugin-image": "^2.0.4",
     "@rollup/plugin-json": "^4.0.0",
     "@rollup/plugin-node-resolve": "^7.1.1",
+    "@types/eth-sig-util": "^2.1.0",
     "@types/node": "^13.5.1",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.30.0",
