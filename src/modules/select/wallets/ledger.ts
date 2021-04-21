@@ -447,20 +447,22 @@ async function ledgerProvider(options: {
       })
   }
 
-  async function signTypedMessage(message: any) {
+  async function signTypedMessage(message: { data: any }) {
     if (addressToPath.size === 0) {
       await enable()
     }
 
     const path = [...addressToPath.values()][0]
 
-    console.log('Sign typed message called. Woah coool!', message)
+    console.log('Sign typed message called. Woah coool!', message.data)
+
+    const data = JSON.parse(message.data)
 
     return eth
       .signEIP712HashedMessage(
         path,
-        ethUtil.bufferToHex(domainHash(message)),
-        ethUtil.bufferToHex(messageHash(message))
+        ethUtil.bufferToHex(domainHash(data)),
+        ethUtil.bufferToHex(messageHash(data))
       )
       .then((result: any) => {
         let v = (result['v'] - 27).toString(16)
