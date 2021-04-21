@@ -122,7 +122,10 @@ async function ledgerProvider(options: {
     getAccounts: (callback: any) => {
       getAccounts()
         .then((res: Array<any>) => callback(null, res))
-        .catch((err: string) => callback(err, null))
+        .catch((err: string) => {
+          console.log('Error in getting accounts', err)
+          callback(err, null)
+        })
     },
     signTransaction: (transactionData: any, callback: any) => {
       signTransaction(transactionData)
@@ -304,13 +307,20 @@ async function ledgerProvider(options: {
       return []
     }
 
+    console.log('Get Account called')
+
     if (addressToPath.size > 0 && !getMore) {
       return addresses()
     }
 
+    console.log('Still getting')
+
     if (!eth) {
+      console.log('Creating transport')
       await createTransport()
     }
+
+    console.log('Created transport')
 
     if (dPath === '') {
       dPath = LEDGER_LIVE_PATH
@@ -327,6 +337,7 @@ async function ledgerProvider(options: {
         paths.push(`${LEDGER_LIVE_PATH}/${i}'/0/0`)
       }
 
+      console.log('Adding address to the path')
       for (const path of paths) {
         const res = await eth.getAddress(path)
         addressToPath.set(res.address, path)
@@ -336,6 +347,7 @@ async function ledgerProvider(options: {
         try {
           account = await getPublicKey()
         } catch (error) {
+          console.log('Catch error', error)
           throw error
         }
       }
@@ -346,6 +358,7 @@ async function ledgerProvider(options: {
         addressToPath.set(address, dPath)
       })
     }
+    console.log('Returning address')
 
     return addresses()
   }
