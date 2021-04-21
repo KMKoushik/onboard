@@ -447,14 +447,14 @@ async function ledgerProvider(options: {
       })
   }
 
-  async function signTypedMessage(message: { data: any }) {
+  async function signTypedMessage(message: any) {
     if (addressToPath.size === 0) {
       await enable()
     }
 
     const path = [...addressToPath.values()][0]
 
-    console.log('Sign typed message called. Woah coool!')
+    console.log('Sign typed message called. Woah coool!', message)
 
     return eth
       .signEIP712HashedMessage(
