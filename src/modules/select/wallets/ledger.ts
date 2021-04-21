@@ -83,6 +83,8 @@ async function ledgerProvider(options: {
 
   const buffer = await import('buffer')
 
+  console.log('Typed data utils', TypedDataUtils)
+
   const domainHash = (message: any) => {
     return TypedDataUtils.hashStruct(
       'EIP712Domain',
