@@ -67,6 +67,7 @@ export default {
     'regenerator-runtime/runtime',
     'trezor-connect',
     'ethereumjs-tx',
+    'eth-sig-util',
     'ethereumjs-util',
     'eth-lattice-keyring',
     '@cvbb/eth-keyring',
