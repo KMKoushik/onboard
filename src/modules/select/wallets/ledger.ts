@@ -1,4 +1,6 @@
 import { LedgerOptions, WalletModule, Helpers } from '../../../interfaces'
+import { TypedDataUtils } from 'eth-sig-util'
+import ethUtil from 'ethereumjs-util'
 
 import ledgerIcon from '../wallet-icons/icon-ledger'
 
@@ -78,8 +80,6 @@ async function ledgerProvider(options: {
   const { default: Eth } = await import('@ledgerhq/hw-app-eth')
 
   const EthereumTx = await import('ethereumjs-tx')
-  const ethUtil = await import('ethereumjs-util')
-  const { TypedDataUtils } = await import('eth-sig-util')
 
   const buffer = await import('buffer')
 
