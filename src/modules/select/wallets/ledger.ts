@@ -438,6 +438,8 @@ async function ledgerProvider(options: {
 
     const data = JSON.parse(message.data)
 
+    console.log('Message to sign', data)
+
     return eth
       .signEIP712HashedMessage(
         path,
@@ -449,6 +451,8 @@ async function ledgerProvider(options: {
         if (v.length < 2) {
           v = '0' + v
         }
+
+        console.log('V value: ', v)
 
         return `0x${result['r']}${result['s']}${v}`
       })
